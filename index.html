@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Todo with Vue</title>
+        <script src="https://unpkg.com/vue@3"></script>
+    </head>
+    <body>
+        <div id="app">
+            <form onsubmit="return false">
+                <input type="text" name="" id="" placeholder="Get it done" v-model="text" />
+                <button @click="addTodo">Add</button>
+            </form>
+            <ul>
+                <li v-for="(todo, index) in todos" :key="index">
+                    <input
+                        type="checkbox"
+                        name=""
+                        :id="todo.id"
+                        @click="updateTodo"
+                        :checked="todo.done"
+                    />
+                    <label :for="todo.id">{{ todo.description }}</label>
+                    <button @click="deleteTodo" :data-index="index">X</button>
+                </li>
+            </ul>
+        </div>
+
+        <script>
+            const { createApp } = Vue;
+
+            createApp({
+                data() {
+                    return {
+                        text: "",
+                        todos: [],
+                    };
+                },
+
+                methods: {
+                    addTodo() {
+                        const todo = {
+                            description: this.text,
+                            done: false,
+                            id: this.createId(this.text),
+                        };
+
+                        this.todos.push(todo);
+
+                        this.text = "";
+                    },
+
+                    updateTodo(e) {
+                        const checkbox = e.target;
+                        const id = checkbox.id;
+                        const todo = this.todos.find((obj) => obj.id === id);
+                        todo.done = checkbox.done;
+                    },
+
+                    deleteTodo(e) {
+                        const index = e.target.dataset.index;
+                        this.todos.splice(index, 1);
+
+                        console.log(this.todos);
+                    },
+
+                    createId(text) {
+                        const randomNumber = Math.floor(Math.random() * (Math.random() * 9000));
+
+                        return text.trim().replaceAll(" ", "").toLowerCase() + randomNumber;
+                    },
+                },
+            }).mount("#app");
+        </script>
+    </body>
+</html>
